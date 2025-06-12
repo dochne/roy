@@ -30,12 +30,17 @@ if (trigger === "push") {
     console.log(`Reset repo to ${initialCommit}`)
 }
 
+
+// Note: It looks like GitHub has a limit of reading the last 1000 commits you put in a given repo
+// Easiest way to resolve this is to have a lower number so (perDay * value doesn't exceed 1,000) and 
+// Then write to say, 5 different repos
+const perDay = 10;
 const commits = [];
 const date = getFirstSundayBeforeOneYearAgo();
 let n = 0;
 for (const value of painting) {
     date.setDate(date.getDate() + 1);
-    for (let x=0; x<46 * value; x++) {
+    for (let x=0; x<perDay * value; x++) {
         commits.push(
             `commit refs/heads/main\n` +
             `mark :${n + 1}\n` +

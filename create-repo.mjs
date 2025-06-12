@@ -49,39 +49,5 @@ const commits = [
     `M 100644 :4 roy-update.sh\n`
 ];
 
-
-// const folder = mkdtemp(path.join(tmpdir(), 'my-temp-repo-'));
-// spawnSync('git', ['init'], { cwd: tempDir, stdio: 'inherit' });
-// spawnSync('git', ['fast-import', { cwd: tempDir, }])
-
 writeFile("/tmp/fast-import.txt", commits.join("\n"));
 console.log("Written to /tmp/fast-import.txt");
-
-// git reset --hard $(git rev-list --max-parents=0 HEAD)
-
-
-// #!/bin/bash
-// repo_dir="my-repo"
-// cd "$repo_dir" || exit
-
-// # Create the input file for git fast-import
-// cat <<EOF > import-script.txt
-// commit refs/heads/main
-// committer Bot <bot@example.com> $(date +%s) +0000
-// data 7
-// Vincent
-// EOF
-
-// for i in {1..4500}; do
-//     timestamp=$(( $(date +%s) - 4500 + i ))
-//     cat <<EOF >> import-script.txt
-// commit refs/heads/main
-// committer Bot <bot@example.com> $timestamp +0000
-// data 7
-// Vincent
-// EOF
-// done
-
-// echo "At fast import"
-// # Run git fast-import
-// git fast-import < import-script.txt
