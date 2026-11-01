@@ -16,7 +16,15 @@ const trigger = env.GITHUB_EVENT_NAME
 const painting = env.PAINTING.split("");
 
 console.log(`Trigger is ${trigger}`)
+if (exec("git rev-parse --is-shallow-repository").trim() === "true") {
+    console.error("Repo is a shallow clone - can't find the real initial commit. Use actions/checkout with fetch-depth: 0");
+    exit(1);
+}
 const initialCommit = exec("git rev-list --max-parents=0 HEAD").trim();
+if (exec(`git log -1 --pretty=%B ${initialCommit}`).trim() !== "initial") {
+    console.error(`Root commit ${initialCommit} isn't the 'initial' commit - refusing to paint on top of it`);
+    exit(1);
+}
 if (trigger === "push") {
     const lastCommit = exec("git log -1 --pretty=%B").trim();
     console.log(`Last commit was '${lastCommit}'`)
@@ -39,7 +47,6 @@ const commits = [];
 const date = getFirstSundayBeforeOneYearAgo();
 let n = 0;
 for (const value of painting) {
-    date.setDate(date.getDate() + 1);
     for (let x=0; x<perDay * value; x++) {
         commits.push(
             `commit refs/heads/main\n` +
@@ -51,6 +58,7 @@ for (const value of painting) {
         )
         n++;
     }
+    date.setDate(date.getDate() + 1);
 }
 
 const response = spawnSync('git', ['fast-import', '--force'], {
